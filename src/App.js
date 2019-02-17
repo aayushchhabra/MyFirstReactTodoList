@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import TodoList from './TodoList';
+import TodoItem from "./TodoItem";
 
 class App extends Component {
   constructor(props) {
@@ -21,17 +22,28 @@ class App extends Component {
 
   addItem = e => {
     e.preventDefault();
-    const newItems = [...this.state.items, this.state.currentItem];
+    const newItem = this.state.currentItem;
+    if(newItem.text !== '') {
+      const newItems = [...this.state.items, newItem];
+      this.setState({
+        items: newItems,
+        currentItem: {text:'', key:''},
+      });
+    }
+  }
+
+  deleteItem = key => {
+    const filteredItems = this.state.items.filter(item => item.key !== key);
     this.setState({
-      items: newItems,
-      currentItem: {text:'', key:''},
-    }, () => console.log(this.state));
+      items: filteredItems,
+    });
   }
 
   render() {
     return (
       <div className="App">
         <TodoList addItem={this.addItem} handleInput={this.handleInput}/>
+        <TodoItem items={this.state.items} deleteItem={this.deleteItem}/>
       </div>
     );
   }
